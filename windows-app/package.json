@@ -1,0 +1,43 @@
+{
+  "name": "reaction-balancer",
+  "version": "4.0.0",
+  "description": "Reaction Balancer desktop application",
+  "main": "main.js",
+  "author": "MTM",
+  "license": "UNLICENSED",
+  "scripts": {
+    "make-icon": "node make-icon.js",
+    "dist": "npm run make-icon && electron-builder --win portable --x64"
+  },
+  "devDependencies": {
+    "electron": "35.1.5",
+    "electron-builder": "26.0.12",
+    "png-to-ico": "2.1.8"
+  },
+  "build": {
+    "appId": "com.mtm.reactionbalancer",
+    "productName": "Reaction Balancer",
+    "directories": {
+      "buildResources": "build",
+      "output": "dist"
+    },
+    "files": [
+      "main.js",
+      "index.html",
+      "package.json"
+    ],
+    "win": {
+      "target": [
+        {
+          "target": "portable",
+          "arch": ["x64"]
+        }
+      ],
+      "icon": "build/icon.ico",
+      "artifactName": "Reaction-Balancer-4.0-Windows-Portable.${ext}"
+    },
+    "portable": {
+      "artifactName": "Reaction-Balancer-4.0-Windows-Portable.${ext}"
+    }
+  }
+}
