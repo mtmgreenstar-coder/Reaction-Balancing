@@ -1,4 +1,4 @@
-name: Build Reaction Balancer V4.1 APK
+name: Build Reaction Balancer V4.0 APK
 
 on:
   push:
@@ -24,7 +24,7 @@ jobs:
           test -f Reaction-Balancer-Android/app/src/main/assets/index.html
           sed -i "s/targetSdk 28/targetSdk 35/" Reaction-Balancer-Android/app/build.gradle
           sed -i "s/versionCode 4/versionCode 5/" Reaction-Balancer-Android/app/build.gradle
-          sed -i "s/versionName '4.0'/versionName '4.1'/" Reaction-Balancer-Android/app/build.gradle
+          sed -i "s/versionName .*/versionName '4.0'/" Reaction-Balancer-Android/app/build.gradle
           grep -E 'compileSdk|targetSdk|versionCode|versionName' Reaction-Balancer-Android/app/build.gradle
 
       - name: Set up Java 17
@@ -45,7 +45,7 @@ jobs:
       - name: Upload APK artifact
         uses: actions/upload-artifact@v4
         with:
-          name: Reaction-Balancer-V4.1-APK
+          name: Reaction-Balancer-V4.0-APK
           path: Reaction-Balancer-Android/app/build/outputs/apk/debug/app-debug.apk
           if-no-files-found: error
           retention-days: 30
