@@ -1,0 +1,53 @@
+name: Build Reaction Balancer Windows Portable x64
+
+on:
+  push:
+    branches: [ main, master ]
+    paths:
+      - 'windows-app/**'
+      - 'Reaction-Balancer-Android-V4.0-Source.zip'
+      - '.github/workflows/build-windows.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build-windows:
+    runs-on: windows-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: windows-app/package.json
+
+      - name: Prepare app HTML and logo
+        shell: pwsh
+        run: |
+          Expand-Archive -Path "Reaction-Balancer-Android-V4.0-Source.zip" -DestinationPath "$env:RUNNER_TEMP\reaction-source" -Force
+          $source = "$env:RUNNER_TEMP\reaction-source\Reaction-Balancer-Android\app\src\main"
+          if (!(Test-Path "$source\assets\index.html")) { throw "App HTML not found in source archive" }
+          New-Item -ItemType Directory -Force -Path "windows-app\build" | Out-Null
+          Copy-Item "$source\assets\index.html" "windows-app\index.html" -Force
+          Copy-Item "$source\res\mipmap-xxxhdpi\ic_launcher.png" "windows-app\build\icon.png" -Force
+
+      - name: Install dependencies
+        working-directory: windows-app
+        run: npm install
+
+      - name: Build portable x64 EXE
+        working-directory: windows-app
+        run: npm run dist
+
+      - name: Upload portable EXE
+        uses: actions/upload-artifact@v4
+        with:
+          name: Reaction-Balancer-4.0-Windows-Portable-x64
+          path: windows-app/dist/Reaction-Balancer-4.0-Windows-Portable.exe
+          if-no-files-found: error
+          retention-days: 30
